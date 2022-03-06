@@ -82,7 +82,7 @@ class TicketController(nextcord.ui.View):
         embed = nextcord.Embed(color=nextcord.Color.orange())
         embed.set_author(name="DANKER SALE ITEMS SUPPORT", url="https://dankersaleitems.herokuapp.com",icon_url=f"{interaction.client.user.display_avatar}")
         embed.add_field(name=":notepad_spiral: DANKER SALE ITEMS Ticket Closed", value="Thanks for reaching out to our support team, we hope your issue was solved.")
-        embed.add_field(name="‏‏‎ ‎", value="Feel free to create a new ticket using `!mticket` command or `/ticket` slash command.", inline=False)
+        embed.add_field(name="‏‏‎ ‎", value="Feel free to create a new ticket using `/ticket` slash command.", inline=False)
         embed.set_footer(text = f"Deleted on: {dt_obj}" , )
         await interaction.user.send(f"{interaction.user.mention} Ticket successfully deleted.")
         await interaction.user.send(embed=embed)

@@ -73,7 +73,7 @@ class TicketController(nextcord.ui.View):
         lock.set_footer(text=f"Danker Sale Items Support ➤ Command ran by: {interaction.user.name}", icon_url =f"{interaction.client.user.display_avatar}")
         await interaction.response.send_message(embed=lock, ephemeral=True) 
         await interaction.channel.set_permissions(interaction.user,send_messages=False,read_messages=True)
-        await interaction.channel.edit(name=f"📥・ticket-{interaction.user.names}-claimed" )
+        await interaction.channel.edit(name=f"📥・ticket-{interaction.user.name}-claimed" )
 
     @nextcord.ui.button(style=nextcord.ButtonStyle.green, emoji="⛔")
     async def channel_delete_and_user_send_callback(self, button: nextcord.Button, interaction: nextcord.Interaction):

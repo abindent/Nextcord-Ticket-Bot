@@ -19,9 +19,9 @@ class HelpPageSource(menus.ListPageSource):
         prefix = self._help_command.context.clean_prefix
         invoked_with = self._help_command.invoked_with
         # create embed
-        embed = nextcord.Embed(title="OpenSourceGames Utility Bot Commands", colour=self._help_command.COLOUR)
+        embed = nextcord.Embed(title="Danker Sale Items Utility Bot Commands", colour=self._help_command.COLOUR)
         embed.set_author(
-            name="Utility Bot", icon_url="https://cdn.discordapp.com/avatars/932265924541681727/b5b498a84d5f8783d732b7b63aa4fe69.png?size=128")
+            name="Danker Sale Items Utility", icon_url="https://cdn.discordapp.com/avatars/867035282724225025/adf635ae5de78e2497b05bc3f390c55d.png?size=240")
         embed.description = (
             f'Use `{prefix}{invoked_with} command` for more info on a command.\n'
             f'Use `{prefix}{invoked_with} category` for more info on a category.'
@@ -60,9 +60,9 @@ class NewHelpCommand(commands.MinimalHelpCommand):
         """implements bot command help page"""
         prefix = self.context.clean_prefix
         invoked_with = self.invoked_with
-        embed = nextcord.Embed(title="OpenSourceGames Utility Bot Commands", colour=self.COLOUR)
+        embed = nextcord.Embed(title="Danker Sale Items Utility Bot Commands", colour=self.COLOUR)
         embed.set_author(
-            name="OpenSourceGames Utility", icon_url="https://cdn.discordapp.com/avatars/932265924541681727/b5b498a84d5f8783d732b7b63aa4fe69.png?size=128")
+            name="Danker Sale Items Utility ", icon_url="https://cdn.discordapp.com/avatars/867035282724225025/adf635ae5de78e2497b05bc3f390c55d.png?size=240")
         embed.description = (
             f'Use `{prefix}{invoked_with} command`  for more info on a command.\n'
             f'Use `{prefix}{invoked_with} category`  for more info on a category.'
@@ -96,7 +96,7 @@ class NewHelpCommand(commands.MinimalHelpCommand):
             colour=self.COLOUR,
         )
         embed.set_author(
-            name="OpenSourceGames Utility", icon_url="https://cdn.discordapp.com/avatars/932265924541681727/b5b498a84d5f8783d732b7b63aa4fe69.png?size=128")
+            name="Danker Sale Items Utility", icon_url="https://cdn.discordapp.com/avatars/867035282724225025/adf635ae5de78e2497b05bc3f390c55d.png?size=240")
         if cog.description:
             embed.description = cog.description
 
@@ -116,7 +116,7 @@ class NewHelpCommand(commands.MinimalHelpCommand):
         """implements group help help page"""
         embed = nextcord.Embed(title=group.qualified_name, colour=self.COLOUR)
         embed.set_author(
-            name="OpenSourceGames Utility", icon_url="https://cdn.discordapp.com/avatars/932265924541681727/b5b498a84d5f8783d732b7b63aa4fe69.png?size=128")
+            name="Danker Sale Items Utility", icon_url="https://cdn.discordapp.com/avatars/867035282724225025/adf635ae5de78e2497b05bc3f390c55d.png?size=240")
         if group.help:
             embed.description = group.help
 
@@ -135,10 +135,9 @@ class NewHelpCommand(commands.MinimalHelpCommand):
     async def send_command_help(self, command: commands.command):
         """implements group help page and command help page"""
         embed = nextcord.Embed(title=f"{command.qualified_name}", description=f"{command.description}", colour=self.COLOUR)
-        embed.set_author(name="OpenSourceGames Utility", icon_url="https://cdn.discordapp.com/avatars/932265924541681727/b5b498a84d5f8783d732b7b63aa4fe69.png?size=128")
+        embed.set_author(name="Danker Sale Items Utility", icon_url="https://cdn.discordapp.com/avatars/867035282724225025/adf635ae5de78e2497b05bc3f390c55d.png?size=240")
         embed.add_field(name="Format of the command", value=f"`{self.context.clean_prefix}{command.qualified_name} {command.signature}`")
-        embed.set_footer(text=f"OpenSourceGames Utility ▶️ {command.qualified_name}", icon_url="https://cdn.discordapp.com/avatars/932265924541681727/b5b498a84d5f8783d732b7b63aa4fe69.png?size=128") 
-
+        embed.set_footer(text=f"Danker Sale Items Utility ▶️ {command.qualified_name}", icon_url="https://cdn.discordapp.com/avatars/867035282724225025/adf635ae5de78e2497b05bc3f390c55d.png?size=240")
         await self.get_destination().send(embed=embed)    
 
 

@@ -4,7 +4,7 @@ from nextcord.ext import commands
 
 class TicketController(nextcord.ui.View):
     def __init__(self):
-        super().__init__()
+        super().__init__(timeout=None)
 
     @nextcord.ui.button(style=nextcord.ButtonStyle.green, emoji="⛏️")
     async def button_callback_a(self, button: nextcord.Button, interaction: nextcord.Interaction):
@@ -93,7 +93,7 @@ class TicketController(nextcord.ui.View):
 
 class TicketCreator(nextcord.ui.View):
     def __init__(self):
-        super().__init__()
+        super().__init__(timeout=None)
 
     @nextcord.ui.button(label="Create Ticket", style=nextcord.ButtonStyle.green, emoji="📩")
     async def create_ticket(self, button: nextcord.Button, interaction: nextcord.Interaction):
@@ -138,12 +138,12 @@ class Ticket(commands.Cog):
         await ctx.send(embed=embed, view=view)
 
     @nextcord.slash_command(name="ticket", description="Creates a ticket for you.")
-    async def ticket(self, interaction: nextcord.Interaction):
+    async def ticket_slash(self, interaction: nextcord.Interaction):
         view = TicketCreator()        
         embed= nextcord.Embed(color=nextcord.Color.red())
         embed.set_author(name="DANK TICKET", icon_url=f"{self.bot.user.display_avatar}")
         embed.add_field(name=":safety_vest: WELCOME TO HELP CENTER", value="Hello @everyone Welcome to ticket center. Do you need help?",inline=False)
-        embed.add_field(name="Help", value="Just create a ticket by reacting with 📩 this emoji")
+        embed.add_field(name="Help", value="Just create a ticket by clicking on the `create ticket` button.)
         embed.set_thumbnail(url=f"{self.bot.user.display_avatar}")
         embed.set_footer(text="Danker Sale Items Support ➤ Command ran by: {}".format(interaction.user.display_name), icon_url =f"{self.bot.user.display_avatar}")
         await interaction.response.send_message(embed=embed, view=view)

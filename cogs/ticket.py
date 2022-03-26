@@ -131,7 +131,7 @@ class Ticket(commands.Cog):
         embed= nextcord.Embed(color=nextcord.Color.red())
         embed.set_author(name="DANK TICKET", icon_url=f"{self.bot.user.display_avatar}")
         embed.add_field(name=":safety_vest: WELCOME TO HELP CENTER", value="Hello @everyone Welcome to ticket center. Do you need help?",inline=False)
-        embed.add_field(name="Help", value="Just create a ticket by reacting with 📩 this emoji")
+        embed.add_field(name="Help", value="Just create a ticket by clicking on the `create ticket` button.")
         embed.set_thumbnail(url=f"{self.bot.user.display_avatar}")
         embed.set_footer(text="Danker Sale Items Support ➤ Command ran by: {}".format(ctx.author.display_name), icon_url =f"{self.bot.user.display_avatar}")
         await ctx.channel.purge(limit=1)

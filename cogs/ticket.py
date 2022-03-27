@@ -1,6 +1,17 @@
 import os, nextcord, datetime
+from pathlib import Path
 from nextcord.ext import commands
 
+def get_path():
+    """
+    A function to get the current path to bot.py
+
+    Returns:
+    - cwd (string) : Path to bot.py directory
+    """
+    cwd = Path(__file__).parents[1]
+    cwd = str(cwd)
+    return cwd
 
 class TicketController(nextcord.ui.View):
     def __init__(self):
@@ -78,17 +89,17 @@ class TicketController(nextcord.ui.View):
     @nextcord.ui.button(style=nextcord.ButtonStyle.green, emoji="⛔")
     async def channel_delete_and_user_send_callback(self, button: nextcord.Button, interaction: nextcord.Interaction):
         dt_obj= datetime.datetime.utcnow().date()
+        member=await interaction.guild.fetch_member(int(interaction.channel.topic))
         await interaction.channel.delete(reason="As per user's request we have deleted.")
         embed = nextcord.Embed(color=nextcord.Color.orange())
         embed.set_author(name="DANKER SALE ITEMS SUPPORT", url="https://dankersaleitems.herokuapp.com",icon_url=f"{interaction.client.user.display_avatar}")
         embed.add_field(name=":notepad_spiral: DANKER SALE ITEMS Ticket Closed", value="Thanks for reaching out to our support team, we hope your issue was solved.")
         embed.add_field(name="‏‏‎ ‎", value="Feel free to create a new ticket using `/ticket` slash command.", inline=False)
         embed.set_footer(text = f"Deleted on: {dt_obj}" , )
-        await interaction.user.send(f"{interaction.user.mention} Ticket successfully deleted.")
-        await interaction.user.send(embed=embed)
-
-
-
+        path = get_path()
+        await member.send(f"{interaction.user.mention} Ticket successfully deleted.",embed=embed)
+        await member.send(file=nextcord.File(f"{path}/tickets/{member.id}.txt"))
+        os.remove(f"{path}/tickets/{member.id}.txt")
 
 
 class TicketCreator(nextcord.ui.View):
@@ -98,7 +109,7 @@ class TicketCreator(nextcord.ui.View):
     @nextcord.ui.button(label="Create Ticket", style=nextcord.ButtonStyle.green, emoji="📩")
     async def create_ticket(self, button: nextcord.Button, interaction: nextcord.Interaction):
         category= nextcord.utils.get(interaction.guild.categories,  name="Help / Support ▶")
-        channel = await interaction.guild.create_text_channel(name=f"📥・ticket {interaction.user.name}", category=category)
+        channel = await interaction.guild.create_text_channel(name=f"📥・ticket {interaction.user.name}", category=category, topic=f"{interaction.user.id}")
         embed = nextcord.Embed(color=nextcord.Color.orange())
         embed.set_author(name="DANK TICKET", icon_url=f"{interaction.client.user.display_avatar}")
         embed.add_field(name="WELCOME TO 🎫 TICKET", value="Hey, welcome to <a:pepe_crymusic:877458357655568384> 💡Danker Sale Items! The easiest way to get updated about Dank Memer if you got banned from there server.Here you can enjoy the server by 🎮 playing games, playing with dank memer, <:triviabot:738337421141475388> joining trivias and much more.")
@@ -113,7 +124,7 @@ class TicketCreator(nextcord.ui.View):
         embed.add_field(name="‏‏‎ ‎", value="<:pepetension:877458283005358080> Dank Memer.React with 🔒 emoji to claim or lock the ticket.",inline=False)
         embed.set_footer(text=f"Danker Sale Items Support ➤ Command ran by: {interaction.user.name}", icon_url =f"{interaction.client.user.display_avatar}")
         await channel.send(f"{interaction.user.mention} Thanks for creating a ticket 📩", embed=embed, view=TicketController())
-        await channel.set_permissions(interaction.user,send_messages=True,read_messages=True) 
+        await channel.set_permissions(interaction.user,send_messages=True,read_messages=True)
         await interaction.message.delete()
 
     @nextcord.ui.button(style=nextcord.ButtonStyle.secondary,emoji="<:dustbin:949602736633167882>")
@@ -123,7 +134,23 @@ class TicketCreator(nextcord.ui.View):
 class Ticket(commands.Cog):
     def __init__(self, bot):
         self.bot = bot 
- 
+     
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot:
+                return
+
+        if message.channel.category.name == "Help / Support ▶":
+          
+            if message.channel.name == "📥・support":    
+                return    
+
+            topic=message.channel.topic
+            await message.guild.fetch_member(int(topic))
+            path = get_path()
+            text=open(f"{path}/tickets/{message.author.id}.txt", "a")
+            text.write(f"Name: {message.author.name}#{message.author.discriminator}, Message: {message.content}\n")
+            text.close()  
 
     @commands.command(name="ticket", description="Creates a ticket for you.")
     async def ticket(self, ctx):
@@ -131,7 +158,7 @@ class Ticket(commands.Cog):
         embed= nextcord.Embed(color=nextcord.Color.red())
         embed.set_author(name="DANK TICKET", icon_url=f"{self.bot.user.display_avatar}")
         embed.add_field(name=":safety_vest: WELCOME TO HELP CENTER", value="Hello @everyone Welcome to ticket center. Do you need help?",inline=False)
-        embed.add_field(name="Help", value="Just create a ticket by clicking on the `create ticket` button.")
+        embed.add_field(name="Help", value="Just create a ticket by reacting with 📩 this emoji")
         embed.set_thumbnail(url=f"{self.bot.user.display_avatar}")
         embed.set_footer(text="Danker Sale Items Support ➤ Command ran by: {}".format(ctx.author.display_name), icon_url =f"{self.bot.user.display_avatar}")
         await ctx.channel.purge(limit=1)
@@ -147,6 +174,31 @@ class Ticket(commands.Cog):
         embed.set_thumbnail(url=f"{self.bot.user.display_avatar}")
         embed.set_footer(text="Danker Sale Items Support ➤ Command ran by: {}".format(interaction.user.display_name), icon_url =f"{self.bot.user.display_avatar}")
         await interaction.response.send_message(embed=embed, view=view)
+
+    @commands.command(name="close", description="Closes a ticket")
+    @commands.has_guild_permissions(administrator=True)
+    async def close(self, ctx: commands.Context):
+        
+        if ctx.channel.name == "📥・support":
+               return
+
+        elif ctx.channel.category.name == "Help / Support ▶":    
+    
+            dt_obj= datetime.datetime.utcnow().date()
+            member=await ctx.message.guild.fetch_member(int(ctx.message.channel.topic))
+            embed = nextcord.Embed(color=nextcord.Color.orange())
+            embed.set_author(name="DANKER SALE ITEMS SUPPORT", url="https://dankersaleitems.herokuapp.com",icon_url=f"{self.bot.user.display_avatar}")
+            embed.add_field(name=":notepad_spiral: DANKER SALE ITEMS Ticket Closed", value="Thanks for reaching out to our support team, we hope your issue was solved.")
+            embed.add_field(name="‏‏‎ ‎", value="Feel free to create a new ticket using `/ticket` slash command.", inline=False)
+            embed.set_footer(text = f"Deleted on: {dt_obj}" , )
+            path = get_path()
+            await ctx.channel.delete(reason="As per user's request we have deleted.")
+            await member.send(f"{member.mention} Ticket successfully deleted.",embed=embed)
+            await member.send(file=nextcord.File(f"{path}/tickets/{member.id}.txt"))
+            os.remove(f"{path}/tickets/{member.id}.txt")
+        
+        else:
+            raise nextcord.errors.InvalidCommandType
 
 def setup(bot):
     bot.add_cog(Ticket(bot))
